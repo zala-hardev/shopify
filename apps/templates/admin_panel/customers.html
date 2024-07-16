@@ -1,0 +1,33 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block main-content %}
+ <!-- Main Content Area -->
+ <div class="container">
+  <div class="bg-gray-100 py-12">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-4">Welcome to <span class="text-blue-500">Customers List</span></h1>
+      <p class="text-lg text-gray-700 leading-relaxed mb-8">Total Number Of Customers are {{ customer_list|length }}</p>
+    </div>
+  </div>
+ <ul role="list" class="divide-y divide-gray-100 m-5">
+  {% for customer in customer_list %}
+  <li class="flex justify-between gap-x-6 py-5 mb-2">
+    <div class="flex min-w-0 gap-x-4">
+      <div class="min-w-0 flex-auto">
+        <p class="text-sm font-semibold leading-6 text-gray-900">{{ customer.customer_name }}</p>
+        <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ request.user.email }}</p>
+        <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ customer.customer_address }} , {{ customer.customer_city }} , {{ customer.customer_state }}</p>
+        <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ customer.customer_country }} {{ customer.customer_phone }}</p>
+      </div>
+    </div>
+    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+      <!--<p class="text-sm leading-6 text-gray-900">Co-Founder / CEO</p>-->
+      <p class="mt-1 text-xs leading-5 text-gray-500"> Last seen <time datetime="2023-01-23T13:23Z">{{ customer.user.last_login }}</time></p>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+</div>
+
+
+{% endblock %}

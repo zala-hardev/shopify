@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link href="{% static 'dist/style.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      /* Style for sidebar */
+      .sidebar {
+          width: 300px;
+      }
+        /* Custom checkbox styles */
+        input[type="checkbox"] {
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 0.1em solid #d1d5db;
+            border-radius: 0.15em;
+            transform: translateY(-0.075em);
+            display: grid;
+            place-content: center;
+        }
+
+        input[type="checkbox"]::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 21%, 85% 0%, 43% 62%);
+            background-color: transparent;
+            transition: background-color 0.25s ease-in-out;
+        }
+
+        input[type="checkbox"]:checked::before {
+            background-color: #4f46e5; /* Indigo-500 */
+        }
+
+        input[type="checkbox"]:focus {
+            outline: max(2px, 0.15em) solid #4f46e5; /* Indigo-500 */
+            outline-offset: max(2px, 0.15em);
+        }
+        /* Sub-menu styles */
+        .sub-menu {
+            display: none;
+            padding-left: 1.5rem;
+        }
+
+        .sub-menu a {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            display: block;
+        }
+
+        .has-sub-menu:hover .sub-menu {
+            display: block;
+        }
+
+  </style>
+  </head>
+  <body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+     <!-- Sidebar -->
+     <div class="bg-gray-800 text-white h-full fixed left-0 top-0 overflow-y-auto sidebar">
+      <div class="p-4">
+          <h1 class="text-xl font-bold">Admin Dashboard</h1>
+      </div>
+      <ul class="p-2">
+          <li class="mb-2">
+              <a href="{% url 'admin_dashboard' %}" class="flex items-center py-2 px-4 {% if request.path == '/admin_login/dashboard' %}bg-gray-500{% else %}bg-gray-800 hover:bg-gray-700{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
+                  <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4M3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
+                  <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A8 8 0 0 1 0 10m8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3"/>
+                </svg>
+                  &nbsp;&nbsp;Dashboard
+              </a>
+          </li>
+          <li class="mb-2">
+              <a href="#" class="flex items-center py-2 px-4 {% if request.path == '/admin_login/dashboard' %}bg-gray-500{% else %}bg-gray-800 hover:bg-gray-700{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-archive-fill" viewBox="0 0 16 16">
+                  <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z"/>
+                </svg>
+                  &nbsp;&nbsp;Orders
+              </a>
+          </li>
+          <li class="mb-2 has-sub-menu">
+            <a href="" class="flex items-center py-2 px-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-cart-plus-fill" viewBox="0 0 16 16">
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0"/>
+              </svg>
+              &nbsp;&nbsp;Products
+            </a>
+            <ul class="sub-menu">
+                <li class="mb-2">
+                  <a href="{% url 'admin_products' %}" class="flex items-center py-2 px-4 {% if request.path == '/admin_login/products' %}bg-gray-500{% else %}bg-gray-800 hover:bg-gray-700{% endif %}">
+                    <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Add Product
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="{% url 'admin_show_products' %}" class="flex items-center py-2 px-4 {% if request.path == '/admin_login/show_products' %}bg-gray-500{% else %}bg-gray-800 hover:bg-gray-700{% endif %}">
+                    <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 4H3a1 1 0 01-1-1V5a1 1 0 011-1h18a1 1 0 011 1v10a1 1 0 01-1 1z"></path>
+                    </svg>
+                    Show Products
+                  </a>
+                </li>
+              </ul>
+          </li>
+          <li class="mb-2">
+              <a href="{% url 'admin_customers' %}" class="flex items-center py-2 px-4 {% if request.path == '/admin_login/customers' %}bg-gray-500{% else %}bg-gray-800 hover:bg-gray-700{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                </svg>
+                  &nbsp;&nbsp;Customers
+              </a>
+          </li>
+          <li class="mb-2">
+              <a href="#" class="flex items-center py-2 px-4 {% if request.path == '/admin_login/dashboard' %}bg-gray-500{% else %}bg-gray-800 hover:bg-gray-700{% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-gear-wide-connected" viewBox="0 0 16 16">
+                  <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5m0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78zM5.048 3.967l-.087.065zm-.431.355A4.98 4.98 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8zm.344 7.646.087.065z"/>
+                </svg>
+                  &nbsp;&nbsp;Settings
+              </a>
+          </li>
+      </ul>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const subMenuToggles = document.querySelectorAll('.has-sub-menu > a');
+    
+        subMenuToggles.forEach(function (toggle) {
+          toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            const subMenu = toggle.nextElementSibling;
+            subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
+          });
+        });
+      });
+  </script>
+  {% block main-content %}
+
+  {% endblock %}
+</body>
+</html>

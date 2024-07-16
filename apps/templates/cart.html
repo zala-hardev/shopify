@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Cart
+{% endblock %}
+
+
+{% block main-content %}
+
+<!-- Main Content -->
+<main class="py-10" id="cartItemsPage">
+  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-6">Shopping Cart</h1>
+      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <div class="p-6 space-y-6" id="cart_items">
+              <!-- Cart Item -->
+              {% if not is_cartExist %}
+            <div  id="cart_items" class="flex items-center justify-center min-h-screen">
+              <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-sm md:max-w-md lg:max-w-lg text-center transform transition duration-500 hover:scale-105">
+                <svg class="w-20 h-20 mx-auto text-gray-400 mb-6 animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 3a2 2 0 00-2 2v16a2 2 0 002 2h18a2 2 0 002-2V5a2 2 0 00-2-2M3 3L9 9m6-6l6 6"></path>
+                </svg>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Cart is Empty</h2>
+                <p class="text-gray-600 mb-6">It looks like you haven't added any items to your cart yet. Start shopping now!</p>
+                <a href="/shop-all/" class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:from-green-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-opacity-75 transform transition duration-300 hover:scale-105">Start Shopping</a>
+            </div>
+              
+              {% else %}
+
+                {% for item in cart_products %}
+              <div class="flex items-center space-x-4">
+                  <img class="h-24 w-24 object-cover rounded-md shadow-sm"
+                      src="{{ item.product.highlight_product_image.url }}" alt="Product Image">
+                  <div class="flex-1">
+                      <h3 class="text-xl font-semibold text-gray-900">{{ item.product.product_name }}</h3>
+                      <p class="text-gray-500">Color : {{ item.color }}</p>
+                      <div class="flex items-center justify-between mt-2">
+                          <div class="flex items-center space-x-2">
+                              <button pid="{{ item.product.id }}" cid="{{ item.color }}" class="minus-cart quantity-btn p-1 text-gray-600 hover:text-gray-800 focus:outline-none">
+                                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fill-rule="evenodd"
+                                          d="M5 10a1 1 0 011-1h8a1 1 0 010 2H6a1 1 0 01-1-1z"
+                                          clip-rule="evenodd" />
+                                  </svg>
+                              </button>
+                              <span id="quantity" class="text-gray-900 font-medium">{{ item.quantity }}</span>
+                              <button pid="{{ item.product.id }}" cid="{{ item.color }}" class="plus-cart quantity-btn p-1 text-gray-600 hover:text-gray-800 focus:outline-none">
+                                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fill-rule="evenodd"
+                                          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H7a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                          clip-rule="evenodd" />
+                                  </svg>
+                              </button>
+                          </div>
+                          <p class="text-xl font-medium text-gray-900">$<span id="each_product_total">{{ item.total_amount }}</span></p>
+                      </div>
+                  </div>
+                  <button pid="{{ item.product.id }}" cid="{{ item.color }}" class="removeFromCart text-indigo-600 hover:text-indigo-500 font-medium">Remove</button>
+              </div>
+              {% endfor %}
+
+              <!-- Subtotal and Checkout -->
+              <div class="border-t border-gray-200 pt-6">
+                <div class="flex justify-between text-2xl font-bold text-gray-900">
+                    <p>Subtotal</p>
+                    <p>$<span id="sub_total">{{ last_amount }}</span></p>
+                </div>
+                <p class="mt-0.5 text-sm text-gray-500">Shipping($2) and taxes calculated at checkout.</p>
+                <div class="mt-6 flex justify-between">
+                    <a href="{% url 'checkout' %}"
+                        class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">Checkout</a>
+                    <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Continue
+                        Shopping &rarr;</button>
+                </div>
+            </div>
+
+              {% endif %}
+
+              
+          </div>
+      </div>
+  </div>
+</main>
+
+<script>
+  $('.plus-cart').click(function(){
+
+    let id = $(this).attr('pid').toString()
+    let cid = $(this).attr('cid').toString()
+    let plus = this.parentNode.children[1]
+
+    let each_product = this.parentNode.parentNode.children[1].children[0]
+
+    $.ajax({
+
+        url : '/plus-cart',
+        method : 'GET',
+        data : {
+            product_id : id,
+            product_color : cid,
+        },
+        success : function(response){
+
+            plus.innerText = response.quantity
+            document.querySelector('#sub_total').innerText = response.last_amount
+
+            each_product.innerText = response.each_product_amount
+        },
+    })
+
+  })
+  $('.minus-cart').click(function(){
+
+    let id = $(this).attr('pid').toString()
+    let cid = $(this).attr('cid').toString()
+    let minus = this.parentNode.children[1]
+
+    let each_product = this.parentNode.parentNode.children[1].children[0]
+
+    $.ajax({
+
+        url : '/minus-cart',
+        method : 'GET',
+        data : {
+            product_id : id,
+            product_color : cid,
+
+        },
+        success : function(response){
+
+            minus.innerText = response.quantity
+            document.querySelector('#sub_total').innerText = response.last_amount
+            each_product.innerText = response.each_product_amount
+        },
+    })
+
+  })
+  $('.removeFromCart').click(function(){
+
+    let id = $(this).attr('pid').toString()
+    let cid = $(this).attr('cid').toString()
+    // let total = this.parentNode.parentNode.children[3].children[0].children[1].children[0]
+    let each_product = this
+
+    $.ajax({
+
+        url : '/remove-item-cart',
+        method : 'GET',
+        data : {
+            product_id : id,
+            product_color : cid,
+
+        },
+        success : function(response){
+
+            document.querySelector('#sub_total').innerText = response.last_amount
+            each_product.parentNode.remove()
+
+            // location.href=location.href
+
+            location.assign(location.href);
+        },
+    })
+
+  })
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block main-content %}
+
+
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+  <div class="container mx-auto px-4 py-8">
+      <h1 class="text-4xl font-bold mb-6 text-center text-gray-800">Product List</h1>
+
+      <div class="flex justify-between items-center mb-4">
+          <input type="text" placeholder="Search products..." class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700">Add New Product</button>
+      </div>
+
+      <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+          <table class="min-w-full bg-white">
+              <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                  <tr>
+                      <th class="py-3 px-6 text-left">ID</th>
+                      <th class="py-3 px-6 text-left">Name</th>
+                      <th class="py-3 px-6 text-left">Category</th>
+                      <th class="py-3 px-6 text-left">Selling Price</th>
+                      <th class="py-3 px-6 text-left">Discounted Price</th>
+                      <th class="py-3 px-6 text-left">Stock</th>
+                      <th class="py-3 px-6 text-center">Actions</th>
+                  </tr>
+              </thead>
+              <tbody class="text-gray-600 text-sm font-light">
+                {% for item in page_obj %}
+                  <tr class="border-b border-gray-200 hover:bg-gray-100">
+                      <td class="py-3 px-6 text-left whitespace-nowrap">{{ item.auto_increment_id }}</td>
+                      <td class="py-3 px-6 text-left">{{ item.product_name }}</td>
+                      <td class="py-3 px-6 text-left">{{ item.category }}</td>
+                      <td class="py-3 px-6 text-left">${{ item.selling_price }}</td>
+                      <td class="py-3 px-6 text-left">${{ item.discounted_price }}</td>
+                      <td class="py-3 px-6 text-left">{{ item.product_quantity }}</td>
+                      <td class="py-3 px-6 text-center">
+                          <button product_id="{{ item.id }}" class="Delete_product bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-700">Delete</button>
+                      </td>
+                  </tr>
+                  {% endfor %}
+                  <!-- Repeat for other products -->
+              </tbody>
+          </table>
+      </div>
+
+      <script>
+            $('.Delete_product').click(function(){
+
+                let prod_id = $(this).attr('product_id').toString();
+                let record = this.parentNode
+
+                $.ajax({
+                    url : '/admin_login/delete_product',
+                    type : 'GET',
+                    data : {
+                        prod : prod_id
+                    },
+                    success : function(resp){
+                        record.parentNode.remove()
+                        
+                    }
+                })
+
+
+            })
+      </script>
+
+      <div class="flex justify-between items-center mt-4">
+          <span class="text-sm text-gray-600">Showing {{ page_obj.number }} to {{ last_page }}</span>
+          <div class="inline-flex">
+            {% if page_obj.has_previous %}
+              <a href="?prod_page={{ page_obj.previous_page_number }}" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-l-lg hover:bg-gray-400">Previous</a>
+              <a href="?prod_page=1" class="bg-gray-300 text-gray-800 py-2 px-4 hover:bg-gray-400">1</a>
+            {% endif %}
+            {% for i in pages %}
+            <a href="?prod_page={{ i }}" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-r-lg hover:bg-gray-400">{{ i }}</a>
+            {% endfor %}
+              {% if page_obj.has_next %}
+              <a href="?prod_page={{ last_page }}" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-r-lg hover:bg-gray-400">{{ last_page }}</a>
+              <a href="?prod_page={{ page_obj.next_page_number }}" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-r-lg hover:bg-gray-400">Next</a>
+              {% endif %}
+          </div>
+      </div>
+  </div>
+
+</body>    
+    
+
+
+{% endblock %}

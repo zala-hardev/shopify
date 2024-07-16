@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Discover the best deals on a wide range of products. Shop the latest products at unbeatable prices and enjoy exclusive offers."
+    />
+    <meta
+      name="keywords"
+      content="e-commerce, online shopping, deals, discounts, categories, products"
+    />
+    <meta name="author" content="Your Company Name" />
+    <title>E-Shop - {% block title %} {% endblock %}</title>
+    <link href="{% static 'dist/style.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <link rel="canonical" href="https://www.your-ecommerce-site.com/" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.your-ecommerce-site.com/" />
+    <meta
+      property="og:title"
+      content="Your E-commerce Site - Best Deals on Products"
+    />
+    <meta
+      property="og:description"
+      content="Discover the best deals on a wide range of products. Shop the latest products at unbeatable prices and enjoy exclusive offers."
+    />
+    <meta
+      property="og:image"
+      content="https://www.your-ecommerce-site.com/images/og-image.jpg"
+    />
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://www.your-ecommerce-site.com/"
+    />
+    <meta
+      property="twitter:title"
+      content="Your E-commerce Site - Best Deals on Products"
+    />
+    <meta
+      property="twitter:description"
+      content="Discover the best deals on a wide range of products. Shop the latest products at unbeatable prices and enjoy exclusive offers."
+    />
+    <meta
+      property="twitter:image"
+      content="https://www.your-ecommerce-site.com/images/twitter-image.jpg"
+    />
+
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- for toaster alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      /*  for wishlist sidebar and cart page if they are empty */
+      @keyframes float {
+        0% {
+          transform: translatey(0px);
+        }
+        50% {
+          transform: translatey(-10px);
+        }
+        100% {
+          transform: translatey(0px);
+        }
+      }
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.9;
+        }
+      }
+
+      .order-card {
+        background-color: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar {
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar-inner {
+        height: 100%;
+        background-color: #4f46e5;
+        transition: width 0.3s ease;
+    }
+
+    .google-btn {
+      transition: all 0.3s ease;
+    }
+    .google-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .google-btn:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.5);
+    }
+    </style>
+  </head>
+
+  <body class="bg-gray-100">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0">
+               <img class="h-8 w-auto mt-5 mr-3" src="{% static 'frontpage_images/ecommerce.jpg' %}" alt="" />
+              
+            </div>
+            <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
+              <a
+                href="{% url 'home' %}"
+                class="{% if request.path == '/' %}border-indigo-500 text-gray-900{% else %} border-transparent text-gray-500 {% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                >Home</a
+              >
+              <div class="relative group mt-5">
+                <button id="categoryBtn" class="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium focus:outline-none">
+                  Shop
+                  <svg class="h-5 w-5 ml-2 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M3.293 6.293a1 1 0 011.414 0L10 11.586l5.293-5.293a1 1 0 111.414 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                <div id="categoryDropdown" class="hidden absolute z-30 -ml-4 mt-3 sm:mt-5 transform w-48 px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 lg:transform-none shadow-lg bg-white rounded-lg overflow-hidden">
+                  <div class="py-1">
+                    <a href="{% url 'shop-all' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">All</a>
+                    <a href="{% url 'shop-mobile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mobile</a>
+                    <a href="{% url 'shop-laptop' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Laptop</a>
+                    <a href="{% url 'shop-headphone' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Headphones</a>
+                    <a href="{% url 'shop-smartwatch' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Smartwatch</a>
+                  </div>
+                </div>
+              </div>
+              {% if request.user.is_authenticated %}
+
+              <a
+                href="{% url 'contact' %}"
+                class="{% if request.path == '/contact/' %}border-indigo-500 {% else %} border-transparent text-gray-500 {% endif %} hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                >Contact</a
+              >
+              <button id="openCartBtn"
+                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                ><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-red-500 hover:text-red-700">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.172 4.929c1.243-1.243 3.257-1.243 4.5 0L12 9.257l4.328-4.328c1.243-1.243 3.257-1.243 4.5 0s1.243 3.257 0 4.5L12 18.343l-8.828-8.828c-1.243-1.243-1.243-3.257 0-4.5z" />
+                </svg>&nbsp;&nbsp;WishList
+                </button>
+                <a
+                href="{% url 'profile' %}"
+                class="{% if request.path == '/profile/' %}border-indigo-500 {% else %} border-transparent text-gray-500 {% endif %} hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                >Profile</a>
+                <!-- Orders -->
+                <a
+                href="{% url 'orders' %}"
+                class="{% if request.path == '/orders/' %}border-indigo-500 {% else %} border-transparent text-gray-500 {% endif %} hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                >Orders</a>
+
+            </div>
+            <!-- End Orders -->
+
+            <!-- WishList -->
+
+    <div id="shoppingCartPanel" class="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+  
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+    
+      <div class="fixed inset-0 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            
+            <div class="pointer-events-auto w-screen max-w-md">
+              <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+                  <div class="flex items-start justify-between">
+                    <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">Shopping WishList</h2>
+                    <div class="ml-3 flex h-7 items-center">
+                      <button type="button" class="relative -m-2 p-2 text-gray-400 hover:text-gray-500">
+                        <span class="absolute -inset-0.5" id="closeCartBtn"></span>
+                        <span class="sr-only">Close panel</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+    
+                  <div class="mt-8">
+                    <div class="flow-root">
+                        {% if request.user.is_authenticated and total_wishlist_products == 0 %}
+                        <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-sm md:max-w-md lg:max-w-lg text-center transform transition duration-500 hover:scale-105">
+                          <svg class="w-20 h-20 mx-auto text-gray-400 mb-6 animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 3a2 2 0 00-2 2v16a2 2 0 002 2h18a2 2 0 002-2V5a2 2 0 00-2-2M3 3L9 9m6-6l6 6"></path>
+                          </svg>
+                          <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Wishlist is Empty</h2>
+                          <p class="text-gray-600 mb-6">Looks like you haven't added anything to your wishlist yet. Start exploring and add items you love!</p>
+                          <button class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full shadow-lg hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-opacity-75 transform transition duration-300 hover:scale-105">Start Shopping</button>
+                        </div>
+                        {% else %}
+                      <ul role="list" class="-my-6 divide-y divide-gray-200" id="wishlist_items">
+                        {% for item in wishlist_items %}
+                        <li class="flex py-6" data_product_wishlist_id="{{ item.id }}">
+                          <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                            <img src="{{ item.product.highlight_product_image.url }}" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="h-full w-full object-cover object-center">
+                          </div>
+    
+                          <div class="ml-4 flex flex-1 flex-col">
+                            <div>
+                              <div class="flex justify-between text-base font-medium text-gray-900">
+                                <h3>
+                                  <a href="#">{{ item.product.product_name }}</a>
+                                </h3>
+                                <p class="ml-4">${{ item.product.discounted_price }}</p>
+                              </div>
+                              <p class="mt-1 text-sm text-gray-500">{{ item.product.category }}</p>
+                            </div>
+                            <div class="flex flex-1 items-end justify-between text-sm">
+                              <p class="text-gray-500">Qty 1</p>
+    
+                              {% comment %} <div class="flex">
+                                <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                              </div> {% endcomment %}
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+
+                        {% endfor %}
+                        {% endif %}
+                        <!-- More products... -->
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
+                  
+                  <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
+                    <p>
+                      <button id="continueWishList" type="button" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        Continue Shopping
+                        <span aria-hidden="true"> &rarr;</span>
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
+    <!-- End Of WishList -->
+
+
+            <script>
+              /* WishList Open and Close Button */
+            const shoppingCartPanel = document.getElementById('shoppingCartPanel');
+            const openCartBtn = document.getElementById('openCartBtn');
+            const continueWishListBtn = document.getElementById('continueWishList');
+
+            openCartBtn.addEventListener('click', function () {
+              shoppingCartPanel.style.display = 'block';
+              {% if request.path == '/' %}
+              document.getElementById('hero-section').classList.add('opacity-40')
+              {% endif %}
+            });
+
+            closeCartBtn.addEventListener('click', function () {
+              shoppingCartPanel.style.display = 'none';
+              {% if request.path == '/' %}
+              document.getElementById('hero-section').classList.remove('opacity-40')
+              {% endif %}
+            });
+
+            continueWishListBtn.addEventListener('click', function () {
+              shoppingCartPanel.style.display = 'none';
+              {% if request.path == '/' %}
+              document.getElementById('hero-section').classList.remove('opacity-40')
+              {% endif %}
+            });
+
+            </script>
+            {% endif %}
+          </div>
+          <div class="hidden {% if request.user.is_authenticated %}lg:ml-6 lg:flex lg:items-center{% else %}sm:ml-6 sm:flex sm:items-center{% endif %}">
+
+            {% if request.user.is_authenticated %}
+            <button id="openLogoutModal" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">Logout</button>
+            <!-- Cart Icon 
+              <a href="{% url 'show-cart' %}" class="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500" aria-label="Cart">
+             Cart icon with badge 
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M3 3h2.828l1.43 7.15 11.288 1.816-1.247 4.488H6.049l-.414-2h10.154a1 1 0 01.987.84l1.26 7.56a1 1 0 01-1.184 1.184L4.154 6.185A1 1 0 013 5.044V3zm2.828 0v2h9.094l1.414 8H6.525l.372 2.232 9.392-1.504-1.144-5.816H6.55l-.418-2h10.153l.059.352L16.586 15h-11.22L4.768 3H6.83z"/>
+              </svg>
+              <div class="absolute top-0 right-0 -mt-1 -mr-1 flex items-center justify-center h-4 w-4 bg-red-500 rounded-full text-xs text-white">{{ total_cart_items }}</div>
+             -->
+            <div class="ml-3 relative">
+
+            <a href="{% url 'show-cart' %}" class="text-gray-800 hover:text-gray-500 focus:outline-none focus:text-gray-500" aria-label="Cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
+              <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+              <!-- Badge -->
+              <circle cx="15" cy="4" r="7" fill="red"/>
+              <text x="12" y="6" font-size="7" font-weight="bold" fill="white" text-anchor="middle">{{ total_cart_items }}</text>
+            </svg>
+          </a>
+        </div>
+        </div>
+
+        <div class="hidden relative z-10" id="logoutModal" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  
+          <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        
+          <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg" id="modal">
+                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                  <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                      </svg>
+                    </div>
+                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Deactivate account</h3>
+                      <div class="mt-2">
+                        <p class="text-sm text-gray-500">Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <button id="deactivateBtn" type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
+                  <button id="cancelBtn" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>        
+
+        <script>
+          document.getElementById('openLogoutModal').addEventListener('click', function () {
+            // console.log('clicked...')
+
+            document.getElementById('logoutModal').classList.remove('hidden')
+            {% if request.path == '/' %}
+            document.getElementById('hero-section').classList.add('opacity-50')
+            {% endif %}
+            document.getElementById('logoutModal').classList.add('opacity-100')
+
+            document.getElementById('deactivateBtn').addEventListener('click',function(){
+              {% if request.path == '/' %}
+              document.getElementById('hero-section').classList.remove('opacity-50')
+              {% endif %}
+              document.getElementById('logoutModal').classList.add('hidden')
+              window.location.href = '/logout/'
+            })
+
+            document.getElementById('cancelBtn').addEventListener('click',function(){
+              {% if request.path == '/' %}
+              document.getElementById('hero-section').classList.remove('opacity-50')
+              {% endif %}
+              document.getElementById('logoutModal').classList.add('hidden')
+            })
+
+          })
+        
+        </script>
+            {% else %}
+            <a href="/register/" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium">Sign Up</a>
+            <a href="/accounts/login/" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium ml-2">Login</a>
+            {% endif %}
+            
+          </div>
+          <div class="-mr-2 flex items-center sm:hidden">
+            <button
+              type="button"
+              id="mobile-menu-button"
+              class="bg-gray-100 p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile menu, show/hide based on menu state. -->
+      <div class="sm:hidden hidden" id="mobile-menu">
+        <div class="pt-2 pb-3 space-y-1">
+          <a
+            href="#"
+            class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+            >Home</a
+          >
+          <a
+            href="#"
+            class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+            >Shop</a
+          >
+          <a
+            href="{% url 'contact' %}"
+            class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+            >Contact</a
+          >
+          
+        </div>
+        {% if not request.user.is_authenticated %}
+        <div class="border-t border-gray-200 pt-4 pb-3">
+          <div class="flex items-center px-4">
+            <a href="/register/"
+              class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium w-full"
+            >
+              Sign Up
+          </a>
+          </div>
+        <div class="border-t border-gray-200 pt-4 pb-3">
+          <div class="flex items-center px-4">
+            <a href="/login/"
+              class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium w-full"
+            >
+              Login
+          </a>
+          </div>
+          {% endif %}
+          <div class="flex items-center px-4 mt-2">
+          <a href="/cart/" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium w-full" aria-label="Cart">
+            Cart Items : 3  
+          </a>
+      </div>
+
+        </div>
+      </div>
+    </nav>
+
+    
+    
+
+
+    <!-- Main Content -->
+    {% block main-content %}
+    
+    {% endblock %} 
+    <!-- end Main Content-->
+        <!-- Footer -->
+        <footer class="bg-gray-800">
+          <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+              <nav class="flex flex-wrap justify-center" aria-label="Footer">
+                  <div class="px-5 py-2">
+                      <a href="{% url 'home' %}" class="text-base text-gray-400 hover:text-white">Home</a>
+                  </div>
+                  <div class="px-5 py-2">
+                      <a href="{% url 'policy' %}" class="text-base text-gray-400 hover:text-white">Privacy Policy</a>
+                  </div>
+                  <div class="px-5 py-2">
+                      <a href="{% url 'shop-all' %}" class="text-base text-gray-400 hover:text-white">Shop</a>
+                  </div>
+                  <div class="px-5 py-2">
+                      <a href="{% url 'contact' %}" class="text-base text-gray-400 hover:text-white">Contact</a>
+                  </div>
+              </nav>
+              <p class="mt-8 text-center text-base text-gray-400">&copy; 2024 E-Shop, Inc. All rights reserved.</p>
+          </div>
+      </footer>
+  
+      <script src="{% static 'js/script.js' %}">
+      </script>
+      <!-- JavaScript for Mobile Menu Toggle 
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuButton = document.querySelector('#mobile-menu-button');
+            const mobileMenu = document.querySelector('#mobile-menu');
+
+            menuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const categoryBtn = document.getElementById("categoryBtn");
+            const categoryDropdown = document.getElementById("categoryDropdown");
+        
+            // Hide dropdown initially
+            categoryDropdown.classList.add("hidden");
+        
+            // Toggle dropdown on button click
+            categoryBtn.addEventListener("click", function() {
+            categoryDropdown.classList.toggle("hidden");
+            });
+        
+            // Hide dropdown when clicking outside of it
+            document.addEventListener("click", function(event) {
+            if (!categoryBtn.contains(event.target) && !categoryDropdown.contains(event.target)) {
+                categoryDropdown.classList.add("hidden");
+            }
+            });
+
+              const shoppingCartPanel = document.getElementById('shoppingCartPanel');
+              const openCartBtn = document.getElementById('openCartBtn');
+              const closeCartBtn = document.getElementById('closeCartBtn');
+
+              openCartBtn.addEventListener('click', function() {
+                shoppingCartPanel.style.display = 'block';
+              });
+
+              closeCartBtn.addEventListener('click', function() {
+                shoppingCartPanel.style.display = 'none';
+              });
+
+              })
+              
+
+      {% block js %}
+
+      {% endblock %}
+
+
+    </script>
+  -->
+
+
+  
+  </body>
+  
+  </html>

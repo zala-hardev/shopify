@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Order History
+{% endblock %}
+
+{% block main-content %}
+
+<div class="container-orders mt-10">
+
+    <div class="order-history-card">
+
+        <div class="order-history-header">
+            <h2>Order History</h2>
+        </div>
+
+        <ul class="order-history-list">
+            {% for item in orders %}
+            <!-- Sample Order Items -->
+            <li class="order-history-item">
+                <h3 class="text-lg font-semibold">Order #{{ item.id }}</h3>
+                <p class="text-gray-500">Date: {{ item.ordered_date }}</p>
+                <div class="order-details">
+                    <p class="text-sm">Total: ${{ item.each_product_total_cost }}</p>
+                    <p class="text-sm">Payment Id: {{ item.razor_pay_payment_id }}</p>
+                </div>
+                <div class="progress-bar mb-2">
+                    {% if item.order_status == 'Pending' %}
+                    <div class="progress-bar-inner bg-blue-400" style="width: 10%;"></div>
+                    {% elif item.order_status == 'Accepted' %}
+                    <div class="progress-bar-inner bg-indigo-700" style="width: 25%;"></div>
+                    {% elif item.order_status == 'Packed' %}
+                    <div class="progress-bar-inner bg-indigo-900" style="width: 50%;"></div>
+                    {% elif item.order_status == 'Out For Delivery' %}
+                    <div class="progress-bar-inner bg-green-400" style="width: 75%;"></div>
+                    {% elif item.order_status == 'Delivered' %}
+                    <div class="progress-bar-inner bg-green-700" style="width: 100%;"></div>
+                    {% else %}
+                    <div class="progress-bar-inner bg-red-400" style="width: 100%;"></div>
+                    {% endif %}
+                </div>
+                <p class="text-gray-600">Status: {{ item.order_status }}</p>
+                {% if item.order_status != 'Cancel' %}
+                <a href="/get_invoice/{{item.razor_pay_payment_id}}" class="text-gray-600 hover:underline">Check Your Invoice</a>
+                <a href="/cancel-order/{{ item.id }}" class="text-blue-500 hover:underline">Want To Cancel</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+
+            <!-- End of Sample Order Items -->
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+
+{% endblock %}

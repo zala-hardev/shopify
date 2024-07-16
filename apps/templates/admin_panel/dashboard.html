@@ -1,0 +1,98 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block main-content %}
+    <!-- Main Content -->
+
+    <div class="ml-64"> <!-- Adjust margin to accommodate sidebar width -->
+        <!-- Top Bar -->
+        <div class="bg-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-bold">Welcome {{ request.user }}</h1>
+                <div>
+                    <a href="#" class="text-gray-700 hover:text-gray-900 mr-4">Settings</a>
+                    <a href="{% url 'logout' %}" class="text-gray-700 hover:text-gray-900">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container mx-auto mt-8">
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-semibold mb-2">Total Orders</h2>
+                        <p class="text-3xl font-bold">{{ total_products }}</p>
+                    </div>
+                    <svg class="h-12 w-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4v4m0 0V3m0 4h4M4 3h4M6 21v-7m0 0V7m0 0H3m3 0h7m4 14h7m-3 0v-4m0 4v7m0 0h-4m4 0h-7m0-10h7m0 0v7m0-7v-4m0 4h4m-4 0H6"></path>
+                    </svg>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between ml-2">
+                    <div>
+                        <h2 class="text-lg font-semibold mb-2">Total Revenue</h2>
+                        <p class="text-3xl font-bold">${{ total_revenue }}</p>
+                    </div>
+                    <svg class="h-12 w-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 3 6-6m8 14H4a2 2 0 01-2-2V4c0-1.1.9-2 2-2h16a2 2 0 012 2v16a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between ml-2">
+                    <div>
+                        <h2 class="text-lg font-semibold mb-2">New Customers</h2>
+                        <p class="text-3xl font-bold">{{ total_customers }}</p>
+                    </div>
+                    <svg class="h-12 w-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    </svg>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between ml-2">
+                    <div>
+                        <h2 class="text-lg font-semibold mb-2">Pending Orders</h2>
+                        <p class="text-3xl font-bold">{{ pedning_orders }}</p>
+                    </div>
+                    <svg class="h-12 w-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Recent Orders Table -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold mb-4">Recent Orders</h2>
+                <div class="bg-white rounded-lg shadow-md overflow-x-auto">
+                    <table class="w-full whitespace-nowrap">
+                        <thead>
+                            <tr class="text-left font-bold">
+                                <th class="px-6 py-4">Order ID</th>
+                                <th class="px-6 py-4">Customer</th>
+                                <th class="px-6 py-4">Date</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample Data -->
+                            {% for item in order_records %}
+                            <tr>
+                                <td class="px-6 py-4">{{ forloop.counter }}</td>
+                                <td class="px-6 py-4">{{ item.customer.customer_name }}</td>
+                                <td class="px-6 py-4">{{ item.ordered_date }}</td>
+                                <td class="px-6 py-4">{{ item.order_status }}</td>
+                                <td class="px-6 py-4">${{ item.each_product_total_cost }}</td>
+                            </tr>
+                            {% endfor %}
+                            <!-- More rows can be added dynamically or fetched from database -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

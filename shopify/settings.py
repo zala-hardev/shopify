@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-qoep*%v06sv$i7j7%v4h*givyiwju$wr*x_v3*wswk4-i&241*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app','.now.sh']
 
 # OAuth mate SITE_ID = 1 aapvi must che
 SITE_ID = 2
@@ -128,7 +128,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles','static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'apps','static')]
 
